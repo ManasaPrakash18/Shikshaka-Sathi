@@ -349,7 +349,7 @@ export default function LoginPortal() {
                     required
                     value={signInEmail}
                     onChange={(e) => setSignInEmail(e.target.value)}
-                    placeholder="ramesh.gowda@ghs-mysuru.in"
+                    placeholder="admin@karnataka.gov.in or school@karnataka.gov.in"
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none focus:border-[#16284F]"
                   />
                 </div>
@@ -378,7 +378,7 @@ export default function LoginPortal() {
                     required
                     value={signInPassword}
                     onChange={(e) => setSignInPassword(e.target.value)}
-                    placeholder="••••••••••••"
+                    placeholder="Enter your password"
                     className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-mono text-[#243449] dark:text-[#F1F5F9] outline-none focus:border-[#16284F]"
                   />
                   <button
@@ -482,7 +482,7 @@ export default function LoginPortal() {
                     required
                     value={signUpEmail}
                     onChange={(e) => setSignUpEmail(e.target.value)}
-                    placeholder="school.or.hm@school.edu.in"
+                    placeholder="e.g. ghs.vidyaranyapuram@karnataka.gov.in"
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                   />
                 </div>
@@ -500,7 +500,7 @@ export default function LoginPortal() {
                     required
                     value={signUpSchoolName}
                     onChange={(e) => setSignUpSchoolName(e.target.value)}
-                    placeholder="e.g. Government High School Vidyaranyapuram (Mysuru)"
+                    placeholder="e.g. Government High School Vidyaranyapuram, Mysuru"
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                   />
                 </div>
@@ -586,7 +586,7 @@ export default function LoginPortal() {
                     type="tel"
                     value={signUpPhone}
                     onChange={(e) => setSignUpPhone(e.target.value)}
-                    placeholder="9845123456"
+                    placeholder="e.g. 9845123456"
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                   />
                 </div>
@@ -603,7 +603,7 @@ export default function LoginPortal() {
                     required
                     value={signUpPassword}
                     onChange={(e) => setSignUpPassword(e.target.value)}
-                    placeholder="••••••••••••"
+                    placeholder="Enter your password"
                     className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-mono text-[#243449] dark:text-[#F1F5F9] outline-none"
                   />
                   <button
@@ -627,7 +627,7 @@ export default function LoginPortal() {
                     required
                     value={signUpConfirmPassword}
                     onChange={(e) => setSignUpConfirmPassword(e.target.value)}
-                    placeholder="••••••••••••"
+                    placeholder="Enter your password"
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-mono text-[#243449] dark:text-[#F1F5F9] outline-none"
                   />
                 </div>
@@ -691,7 +691,7 @@ export default function LoginPortal() {
                   required
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
-                  placeholder="headmaster@ghs-mysuru.in"
+                  placeholder="e.g. admin@karnataka.gov.in or school email"
                   className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                 />
               </div>

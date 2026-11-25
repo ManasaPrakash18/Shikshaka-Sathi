@@ -346,14 +346,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
-      // 1. Attempt Supabase Auth login
-      const { data, error } = await signInWithEmail(cleanEmail, pass);
-      if (!error && data?.session) {
+      // 1. When Supabase is configured, enforce strict Supabase Auth authentication
+      if (isSupabaseConfigured()) {
+        const { data, error } = await signInWithEmail(cleanEmail, pass);
+        if (error || !data?.session) {
+          return {
+            success: false,
+            error: error?.message || 'Invalid email or password. Please check your credentials.',
+          };
+        }
         await syncSupabaseSession(data.session);
         return { success: true };
       }
 
-      // 2. Resilient fallback: If Supabase reports 'Email logins are disabled' or credentials match existing user record
+      // 2. Offline / local mock fallback (ONLY when Supabase is not configured)
       if (matchingUser) {
         if (matchingUser.status === 'PENDING') {
           return {
@@ -368,7 +374,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           };
         }
 
-        // Authenticate into application session
         setCurrentUser(matchingUser);
         if (matchingUser.school_id) {
           const sch = state.schools.find((s) => s.id === matchingUser.school_id);
@@ -391,7 +396,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       return {
         success: false,
-        error: error?.message || 'Invalid credentials or user not found. Please check your email and password.',
+        error: 'Invalid credentials or user not found. Please check your email and password.',
       };
     } catch (e: any) {
       return { success: false, error: e?.message || 'Login failed' };

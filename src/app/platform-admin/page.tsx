@@ -51,7 +51,7 @@ export default function PlatformAdminPage() {
   }
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'PENDING' | 'ACTIVE' | 'REVOKED'>('ACTIVE');
+  const [activeTab, setActiveTab] = useState<'ALL' | 'PENDING' | 'ACTIVE' | 'REVOKED'>('ALL');
 
   // Modals
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
@@ -98,6 +98,7 @@ export default function PlatformAdminPage() {
   };
 
   // Strictly segregated, mutually exclusive collections so schools NEVER collide
+  const allSchoolsList = state.schools.filter(matchesSearch);
   const pendingSchoolsList = state.schools.filter((s) => s.status === 'PENDING_APPROVAL' && matchesSearch(s));
   const activeSchoolsList = state.schools.filter((s) => s.status === 'ACTIVE' && matchesSearch(s));
   const revokedSchoolsList = state.schools.filter((s) => s.status === 'REVOKED' && matchesSearch(s));
@@ -215,8 +216,12 @@ export default function PlatformAdminPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Registered */}
         <div 
-          onClick={() => setActiveTab('ACTIVE')}
-          className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm cursor-pointer hover:border-[#16284F]/50 transition-all"
+          onClick={() => setActiveTab('ALL')}
+          className={`p-5 rounded-2xl border shadow-sm cursor-pointer transition-all ${
+            activeTab === 'ALL'
+              ? 'ring-2 ring-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/40 border-indigo-400'
+              : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 hover:border-indigo-400'
+          }`}
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -314,7 +319,24 @@ export default function PlatformAdminPage() {
       {/* DISTINCT SECTION TABS & SEARCH (Strict Separation) */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-2">
         {/* Navigation Tabs */}
-        <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+        <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl flex-wrap gap-1">
+          <button
+            onClick={() => setActiveTab('ALL')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              activeTab === 'ALL'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            All Registered Schools
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
+              activeTab === 'ALL' ? 'bg-indigo-700 text-white' : 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-200'
+            }`}>
+              {totalRegistered}
+            </span>
+          </button>
+
           <button
             onClick={() => setActiveTab('PENDING')}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
@@ -380,7 +402,147 @@ export default function PlatformAdminPage() {
         </div>
       </div>
 
-      {/* SECTION 1: PENDING SCHOOL REQUESTS (Only visible when activeTab === 'PENDING') */}
+            {/* SECTION 0: ALL REGISTERED SCHOOLS (Visible when activeTab === 'ALL') */}
+      {activeTab === 'ALL' && (
+        <div className="rounded-2xl bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-900/60 shadow-sm overflow-hidden animate-in fade-in">
+          <div className="bg-gradient-to-r from-indigo-50/80 to-slate-50 dark:from-indigo-950/40 dark:to-slate-900 px-6 py-4 border-b border-indigo-200 dark:border-indigo-900/40 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-indigo-600 text-white shadow-sm">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-base font-extrabold text-slate-900 dark:text-white">
+                  All Registered Schools & Current Status
+                </h2>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                  Complete statewide roster displaying approval, active, and revoked states across Karnataka.
+                </p>
+              </div>
+            </div>
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-900 dark:bg-indigo-900 dark:text-indigo-200">
+              {allSchoolsList.length} Schools Total
+            </span>
+          </div>
+
+          {allSchoolsList.length === 0 ? (
+            <div className="p-12 text-center text-slate-500 dark:text-slate-400 text-xs">
+              <Building2 className="w-10 h-10 text-slate-400 mx-auto mb-2 opacity-60" />
+              <p className="text-sm font-bold text-slate-800 dark:text-slate-200">No Schools Found</p>
+              <p className="text-xs text-slate-400 mt-1">Try adjusting your search criteria.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase tracking-wider font-bold text-[10px] border-b border-slate-200 dark:border-slate-700">
+                  <tr>
+                    <th className="py-3 px-4">{t.platformAdmin.schoolName}</th>
+                    <th className="py-3 px-3">{t.platformAdmin.udise}</th>
+                    <th className="py-3 px-4">{t.platformAdmin.hmName}</th>
+                    <th className="py-3 px-3">{t.platformAdmin.hmPhone}</th>
+                    <th className="py-3 px-3">{t.platformAdmin.academicYear}</th>
+                    <th className="py-3 px-3">Access Expiry</th>
+                    <th className="py-3 px-3">Current Status</th>
+                    <th className="py-3 px-4 text-right">{t.platformAdmin.actions}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {allSchoolsList.map((sch) => (
+                    <tr key={sch.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                      <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-slate-100 max-w-[200px] truncate">
+                        {getSchoolName(sch, language)}
+                        <div className="text-[10px] text-slate-500 font-normal">
+                          {getLocationName(sch.taluk, language, sch.taluk_kannada)}, {getLocationName(sch.district, language, sch.district_kannada)}
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-3 font-mono font-bold text-[#16284F] dark:text-[#5B9BD5]">
+                        {sch.udise}
+                      </td>
+                      <td className="py-3.5 px-4 font-medium text-slate-800 dark:text-slate-200">
+                        {getHMName(sch, language)}
+                      </td>
+                      <td className="py-3.5 px-3 font-mono text-slate-600 dark:text-slate-400">
+                        {sch.hm_phone}
+                      </td>
+                      <td className="py-3.5 px-3 font-semibold text-slate-700 dark:text-slate-300">
+                        {sch.current_academic_year}
+                      </td>
+                      <td className="py-3.5 px-3 font-mono text-xs text-slate-600 dark:text-slate-400">
+                        {sch.expiry_date || '2027-04-30'}
+                      </td>
+                      <td className="py-3.5 px-3">
+                        {sch.status === 'ACTIVE' && (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-300">
+                            APPROVED / ACTIVE
+                          </span>
+                        )}
+                        {sch.status === 'PENDING_APPROVAL' && (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400 border-amber-300">
+                            PENDING APPROVAL
+                          </span>
+                        )}
+                        {sch.status === 'REVOKED' && (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400 border-rose-300">
+                            REVOKED / EXPIRED
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          {sch.status === 'PENDING_APPROVAL' && (
+                            <button
+                              onClick={() => handleApprove(sch.id)}
+                              className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] cursor-pointer shadow-sm transition-colors"
+                              title="Approve this school"
+                            >
+                              Approve
+                            </button>
+                          )}
+                          {sch.status === 'ACTIVE' && (
+                            <button
+                              onClick={() => {
+                                setSelectedSchool(sch);
+                                setRevokeModalOpen(true);
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 font-bold text-[11px] cursor-pointer transition-colors"
+                              title="Revoke School Access"
+                            >
+                              Revoke
+                            </button>
+                          )}
+                          {sch.status === 'REVOKED' && (
+                            <button
+                              onClick={() => {
+                                setSelectedSchool(sch);
+                                setReactivateModalOpen(true);
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 font-bold text-[11px] cursor-pointer transition-colors"
+                              title="Reactivate School Access"
+                            >
+                              Reactivate
+                            </button>
+                          )}
+                          <button
+                            onClick={() => {
+                              setSelectedSchool(sch);
+                              setViewModalOpen(true);
+                            }}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                            title="View Details"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+{/* SECTION 1: PENDING SCHOOL REQUESTS (Only visible when activeTab === 'PENDING') */}
       {activeTab === 'PENDING' && (
         <div className="rounded-2xl bg-white dark:bg-slate-900 border-2 border-amber-300 dark:border-amber-800/80 shadow-md overflow-hidden animate-in fade-in">
           <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/20 px-6 py-4 border-b border-amber-200 dark:border-amber-800/60 flex items-center justify-between">
