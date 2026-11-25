@@ -349,7 +349,7 @@ export default function LoginPortal() {
                     required
                     value={signInEmail}
                     onChange={(e) => setSignInEmail(e.target.value)}
-                    placeholder="admin@karnataka.gov.in or school@karnataka.gov.in"
+                    placeholder="example@gmail.com"
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none focus:border-[#16284F]"
                   />
                 </div>
@@ -378,7 +378,7 @@ export default function LoginPortal() {
                     required
                     value={signInPassword}
                     onChange={(e) => setSignInPassword(e.target.value)}
-                    placeholder="Enter your password"
+                    placeholder="password"
                     className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-mono text-[#243449] dark:text-[#F1F5F9] outline-none focus:border-[#16284F]"
                   />
                   <button
@@ -451,7 +451,7 @@ export default function LoginPortal() {
                   required
                   value={signUpName}
                   onChange={(e) => setSignUpName(e.target.value)}
-                  placeholder="e.g. Sri Ramesh Gowda"
+                  placeholder="Full name"
                   className="w-full px-3.5 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                 />
               </div>
@@ -466,7 +466,7 @@ export default function LoginPortal() {
                   lang="kn"
                   value={signUpNameKannada}
                   onChange={(e) => setSignUpNameKannada(e.target.value)}
-                  placeholder="ಮುಖ್ಯೋಪಾಧ್ಯಾಯರ ಪೂರ್ಣ ಹೆಸರು"
+                  placeholder="ಹೆಸರು"
                   className="w-full px-3.5 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                 />
               </div>
@@ -482,7 +482,7 @@ export default function LoginPortal() {
                     required
                     value={signUpEmail}
                     onChange={(e) => setSignUpEmail(e.target.value)}
-                    placeholder="e.g. ghs.vidyaranyapuram@karnataka.gov.in"
+                    placeholder="example@gmail.com"
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                   />
                 </div>
@@ -500,7 +500,7 @@ export default function LoginPortal() {
                     required
                     value={signUpSchoolName}
                     onChange={(e) => setSignUpSchoolName(e.target.value)}
-                    placeholder="e.g. Government High School Vidyaranyapuram, Mysuru"
+                    placeholder="School name"
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                   />
                 </div>
@@ -516,7 +516,7 @@ export default function LoginPortal() {
                   lang="kn"
                   value={signUpSchoolNameKannada}
                   onChange={(e) => setSignUpSchoolNameKannada(e.target.value)}
-                  placeholder="ಶಾಲೆಯ ಪೂರ್ಣ ಹೆಸರು"
+                  placeholder="ಶಾಲೆಯ ಹೆಸರು"
                   className="w-full px-3.5 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                 />
               </div>
@@ -555,7 +555,7 @@ export default function LoginPortal() {
                     type="text"
                     value={signUpDesignation}
                     onChange={(e) => setSignUpDesignation(e.target.value)}
-                    placeholder="Headmaster / Principal"
+                    placeholder="Designation"
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                   />
                 </div>
@@ -586,7 +586,7 @@ export default function LoginPortal() {
                     type="tel"
                     value={signUpPhone}
                     onChange={(e) => setSignUpPhone(e.target.value)}
-                    placeholder="e.g. 9845123456"
+                    placeholder="Phone number"
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                   />
                 </div>
@@ -603,7 +603,7 @@ export default function LoginPortal() {
                     required
                     value={signUpPassword}
                     onChange={(e) => setSignUpPassword(e.target.value)}
-                    placeholder="Enter your password"
+                    placeholder="password"
                     className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-mono text-[#243449] dark:text-[#F1F5F9] outline-none"
                   />
                   <button
@@ -627,7 +627,7 @@ export default function LoginPortal() {
                     required
                     value={signUpConfirmPassword}
                     onChange={(e) => setSignUpConfirmPassword(e.target.value)}
-                    placeholder="Enter your password"
+                    placeholder="password"
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-mono text-[#243449] dark:text-[#F1F5F9] outline-none"
                   />
                 </div>
@@ -691,7 +691,7 @@ export default function LoginPortal() {
                   required
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
-                  placeholder="e.g. admin@karnataka.gov.in or school email"
+                  placeholder="example@gmail.com"
                   className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-[#F3F6F9] dark:bg-[#1E2B3C] border border-[#D8E1EA] dark:border-[#2A3B50] font-semibold text-[#243449] dark:text-[#F1F5F9] outline-none"
                 />
               </div>

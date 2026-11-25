@@ -58,10 +58,8 @@ export function calculateCurrentAcademicYear(date: Date = new Date()): string {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User | null>(
-    DEMO_USERS.find((user) => user.id === DEMO_HM_ID) ?? null
-  );
-  const [currentSchool, setCurrentSchool] = useState<School | null>(DEMO_SCHOOLS[0] ?? null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentSchool, setCurrentSchool] = useState<School | null>(null);
   const [academicYear, setAcademicYearState] = useState<string>('2026-27');
 
   useEffect(() => {
@@ -105,14 +103,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await erpLocalDB.persistState(state);
     }
 
-    setCurrentUser(userRecord);
-
-    if (userRecord.school_id) {
+    if (userRecord.role !== 'PLATFORM_ADMIN' && userRecord.school_id) {
       const sch = state.schools.find((s) => s.id === userRecord.school_id);
+      if (sch?.status === 'REVOKED' || userRecord.status === 'REVOKED') {
+        setIsSupabaseAuthActive(false);
+        setCurrentUser(null);
+        setCurrentSchool(null);
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('erp_is_logged_out', 'true');
+          localStorage.setItem('erp_is_logged_out', 'true');
+        }
+        return;
+      }
       if (sch) setCurrentSchool(sch);
     } else if (userRecord.role === 'PLATFORM_ADMIN') {
       setCurrentSchool(null);
     }
+
+    setCurrentUser(userRecord);
 
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('erp_is_logged_out');
@@ -355,44 +363,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             error: error?.message || 'Invalid email or password. Please check your credentials.',
           };
         }
+
+        // Post-auth verification: ensure user or their affiliated school is NOT revoked or unapproved
+        const freshState = await erpLocalDB.loadState();
+        const authedEmail = data.session.user?.email?.toLowerCase();
+        let authedUser = freshState.users.find((u) => u.email && u.email.toLowerCase() === authedEmail);
+        
+        if (!authedUser) {
+          try {
+            const client = getSupabaseClient();
+            const { data: dbUser } = await client.from('users').select('*').ilike('email', cleanEmail).maybeSingle();
+            if (dbUser) authedUser = dbUser as User;
+          } catch {}
+        }
+
+        if (authedUser && authedUser.role !== 'PLATFORM_ADMIN' && authedUser.school_id) {
+          let authedSchool = freshState.schools.find((s) => s.id === authedUser.school_id);
+          if (!authedSchool) {
+            try {
+              const client = getSupabaseClient();
+              const { data: dbSchool } = await client.from('schools').select('*').eq('id', authedUser.school_id).maybeSingle();
+              if (dbSchool) authedSchool = dbSchool as School;
+            } catch {}
+          }
+
+          if (authedSchool?.status === 'REVOKED' || authedUser.status === 'REVOKED') {
+            await signOutUser();
+            return {
+              success: false,
+              error: 'Access for this school and its faculty has been revoked by the Platform Admin.',
+            };
+          }
+
+          if (authedSchool?.status === 'PENDING_APPROVAL') {
+            await signOutUser();
+            return {
+              success: false,
+              error: 'Your school registration is pending approval by the Platform Admin. Please check back once verified.',
+            };
+          }
+        }
+
         await syncSupabaseSession(data.session);
         return { success: true };
       }
 
-      // 2. Offline / local mock fallback (ONLY when Supabase is not configured)
-      if (matchingUser) {
-        if (matchingUser.status === 'PENDING') {
-          return {
-            success: false,
-            error: 'Your account is pending verification and approval by your administrator.',
-          };
-        }
-        if (matchingUser.status === 'REVOKED') {
-          return {
-            success: false,
-            error: 'Your user access has been revoked.',
-          };
-        }
-
-        setCurrentUser(matchingUser);
-        if (matchingUser.school_id) {
-          const sch = state.schools.find((s) => s.id === matchingUser.school_id);
-          if (sch) setCurrentSchool(sch);
-        } else if (matchingUser.role === 'PLATFORM_ADMIN') {
-          setCurrentSchool(null);
-        }
-
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('erp_is_logged_out');
-          localStorage.setItem('erp_active_role', matchingUser.role);
-          localStorage.setItem('erp_active_user', matchingUser.id);
-          if (matchingUser.school_id) {
-            localStorage.setItem('erp_active_school', matchingUser.school_id);
-          }
-        }
-
-        return { success: true };
-      }
+      // 2. Strict check: reject offline login without Supabase credentials
+      return {
+        success: false,
+        error: 'Invalid email or password. Please verify your credentials or check Supabase connection.',
+      };
 
       return {
         success: false,

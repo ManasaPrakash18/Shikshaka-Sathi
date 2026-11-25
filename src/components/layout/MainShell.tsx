@@ -47,6 +47,46 @@ function InnerShell({ children }: { children: React.ReactNode }) {
     return <LoginPortal />;
   }
 
+  // Revoked School & Faculty Guard: If school access is revoked, immediately block faculty and school admin
+  if (mounted && currentUser && currentUser.role !== 'PLATFORM_ADMIN' && (currentSchool?.status === 'REVOKED' || currentUser.status === 'REVOKED')) {
+    return (
+      <div className="min-h-screen bg-[#F4F7FA] dark:bg-[#0B131E] flex flex-col items-center justify-center p-4 sm:p-6 text-[#243449] dark:text-[#F1F5F9] font-sans">
+        <div className="w-full max-w-xl bg-white dark:bg-slate-900 rounded-3xl border-2 border-rose-300 dark:border-rose-900/80 shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-gradient-to-r from-rose-600 to-red-600 px-6 py-6 text-white text-center">
+            <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mx-auto mb-3 shadow-inner">
+              <ShieldAlert className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-xl font-black tracking-tight">School Access Revoked</h1>
+            <p className="text-xs text-rose-100 mt-1 font-medium">
+              Karnataka School Education Department — CCE Shikshaka Sathi Portal
+            </p>
+          </div>
+
+          <div className="p-6 sm:p-8 space-y-6">
+            <div className="p-4 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 space-y-2.5 text-xs">
+              <div className="font-extrabold text-sm text-slate-900 dark:text-slate-100">
+                {currentSchool?.name || 'Institution Access Suspended'}
+              </div>
+              <p className="text-slate-600 dark:text-slate-400">
+                Access for this institution and all associated faculty accounts has been revoked or expired by the Platform Administrator.
+              </p>
+            </div>
+
+            <div className="pt-2 flex justify-center">
+              <button
+                onClick={() => logout()}
+                className="py-3 px-6 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Return to Login
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Unapproved School Guard View: If logged into a school awaiting Master Admin approval
   if (mounted && currentUser && currentUser.role !== 'PLATFORM_ADMIN' && currentSchool?.status === 'PENDING_APPROVAL') {
     return (
