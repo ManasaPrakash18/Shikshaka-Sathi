@@ -17,10 +17,11 @@ import { useAppState } from '@/lib/context/AppStateContext';
 import { useLanguage } from '@/lib/context/LanguageContext';
 import { getSchoolName, getLocationName } from '@/lib/utils/kannadaNames';
 import SyncStatusBadge from '../ui/SyncStatusBadge';
-import RoleSwitcher from '../ui/RoleSwitcher';
+// RoleSwitcher removed in production
+import { Shield, UserCheck } from 'lucide-react';
 
 export default function AppHeader({ onToggleSidebar }: { onToggleSidebar: () => void }) {
-  const { currentSchool, academicYear, setAcademicYear, switchSchool, userRole } = useAuth();
+  const { currentSchool, academicYear, setAcademicYear, switchSchool, userRole, currentUser } = useAuth();
   const { state } = useAppState();
   const { language, setLanguage, t } = useLanguage();
   const [isDark, setIsDark] = useState(false);
@@ -142,8 +143,28 @@ export default function AppHeader({ onToggleSidebar }: { onToggleSidebar: () => 
           {/* Offline Sync Status Badge */}
           <SyncStatusBadge />
 
-          {/* Role Persona Switcher */}
-          <RoleSwitcher />
+          {/* Static Current Role Badge */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-[#1E2B3C] border border-slate-200 dark:border-[#2A3B50] select-none">
+            {userRole === 'PLATFORM_ADMIN' ? (
+              <Shield className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+            ) : userRole === 'SCHOOL_ADMIN' ? (
+              <UserCheck className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            ) : (
+              <GraduationCap className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            )}
+            <div className="flex flex-col text-left">
+              <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 leading-tight">
+                {language === 'kn' ? 'ಖಾತೆ ಪಾತ್ರ' : 'Role'}
+              </span>
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-tight">
+                {userRole === 'PLATFORM_ADMIN'
+                  ? (language === 'kn' ? 'ಪ್ಲಾಟ್‌ಫಾರ್ಮ್ ನಿರ್ವಾಹಕರು' : 'Platform Admin')
+                  : userRole === 'SCHOOL_ADMIN'
+                  ? (language === 'kn' ? 'ಮುಖ್ಯೋಪಾಧ್ಯಾಯರು' : 'School Admin (HM)')
+                  : (language === 'kn' ? 'ಶಿಕ್ಷಕರು' : 'Faculty / Teacher')}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </header>
